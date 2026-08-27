@@ -1,5 +1,8 @@
 # ConfigMesh
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](pyproject.toml)
+
 **One payload in, any API out.** ConfigMesh is a protocol- and auth-agnostic
 connector engine: describe a target service (URL, protocol, auth, request/
 response shape) once, then send it a normalized payload and get a normalized
@@ -86,7 +89,7 @@ pip install "configmesh[mcp]"
 ```json
 {
   "mcpServers": {
-    "configmesh": { "command": "configmesh-mcp" }
+    "configmesh": { "command": "/path/to/.venv/bin/configmesh-mcp" }
   }
 }
 ```
@@ -95,6 +98,9 @@ Exposes tools: `invoke` (stateless, one-off), `register_connector`,
 `list_connectors`, `invoke_connector` (by name), `delete_connector`. An agent
 can register a connector for "the Salesforce API" once, then just say "call
 it with this payload" from then on.
+
+**➜ Full setup for Claude Desktop / Claude Code / Cursor, persistence,
+security notes, and a worked example: [docs/mcp-integration.md](docs/mcp-integration.md).**
 
 ## Core concepts
 
@@ -110,7 +116,17 @@ it with this payload" from then on.
   service." Store it as a named `Connector` or pass it inline per call.
 
 See [`src/configmesh/core/models.py`](src/configmesh/core/models.py) for the
-full schema.
+full schema, and [docs/auth-reference.md](docs/auth-reference.md) for the
+`config` shape each auth `type` expects.
+
+## Documentation
+
+- [docs/mcp-integration.md](docs/mcp-integration.md) — full MCP client setup
+  (Claude Desktop, Claude Code, Cursor), persistence, security, tool
+  reference, worked example, troubleshooting
+- [docs/auth-reference.md](docs/auth-reference.md) — `config` fields for
+  every auth type
+- [CONTRIBUTING.md](CONTRIBUTING.md) — dev setup, running tests, PR expectations
 
 ## Extending
 

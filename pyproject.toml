@@ -47,8 +47,8 @@ configmesh-api = "configmesh.api.app:main"
 configmesh-mcp = "configmesh.mcp_server.server:main"
 
 [project.urls]
-Homepage = "https://github.com/your-org/configmesh"
-Issues = "https://github.com/your-org/configmesh/issues"
+Homepage = "https://github.com/bvenkata/configmesh"
+Issues = "https://github.com/bvenkata/configmesh/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/configmesh"]
