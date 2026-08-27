@@ -7,16 +7,17 @@ name = "mcp-api-connect"
 version = "0.1.0"
 description = "Protocol- and auth-agnostic API connector engine: send one normalized payload, reach REST or SOAP services behind any auth scheme — as a library, HTTP API, or MCP server."
 readme = "README.md"
-license = { text = "MIT" }
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
 requires-python = ">=3.10"
 authors = [
-    { name = "mcp-api-connect contributors" }
+    { name = "Balaji Venkatasubramaniyar" },
+    { name = "mcp-api-connect contributors" },
 ]
 keywords = ["api", "integration", "connector", "soap", "rest", "oauth", "mcp", "gateway"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Topic :: Software Development :: Libraries",
     "Topic :: Internet :: WWW/HTTP",
@@ -28,6 +29,7 @@ dependencies = [
     "jsonpath-ng>=1.6",
     "jinja2>=3.1",
     "xmltodict>=0.13",
+    "typing-extensions>=4.6",
 ]
 
 [project.optional-dependencies]

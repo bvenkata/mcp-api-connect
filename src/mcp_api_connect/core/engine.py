@@ -4,6 +4,7 @@ import time
 from typing import Any
 
 import httpx
+from typing_extensions import Self
 
 from mcp_api_connect.core.adapters import DEFAULT_ADAPTER_REGISTRY, ProtocolAdapter
 from mcp_api_connect.core.auth import DEFAULT_AUTH_REGISTRY, AuthStrategy
@@ -91,7 +92,7 @@ class MCPAPIConnectEngine:
         if self._owns_client:
             await self._client.aclose()
 
-    async def __aenter__(self) -> MCPAPIConnectEngine:
+    async def __aenter__(self) -> Self:
         return self
 
     async def __aexit__(self, *exc_info: object) -> None:

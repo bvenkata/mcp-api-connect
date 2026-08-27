@@ -3,12 +3,12 @@ REST/SOAP services (stateless `invoke`) or pre-registered connectors
 (`register_connector` + `invoke_connector`) as tools.
 
 Run with:
-    mcp_api_connect-mcp                # stdio transport (default MCP client config)
+    mcp-api-connect                    # stdio transport (default MCP client config)
 
 Point an MCP client at it, e.g. in Claude Desktop / Claude Code config:
     {
       "mcpServers": {
-        "mcp_api_connect": { "command": "mcp_api_connect-mcp" }
+        "mcp-api-connect": { "command": "mcp-api-connect" }
       }
     }
 
