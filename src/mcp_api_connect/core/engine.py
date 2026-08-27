@@ -5,22 +5,28 @@ from typing import Any
 
 import httpx
 
-from configmesh.core.adapters import DEFAULT_ADAPTER_REGISTRY, ProtocolAdapter
-from configmesh.core.auth import DEFAULT_AUTH_REGISTRY, AuthStrategy
-from configmesh.core.models import AuthType, ConfigMeshError, InvokeResult, InvokeSpec, Protocol
-from configmesh.core.transform import parse_response_body
+from mcp_api_connect.core.adapters import DEFAULT_ADAPTER_REGISTRY, ProtocolAdapter
+from mcp_api_connect.core.auth import DEFAULT_AUTH_REGISTRY, AuthStrategy
+from mcp_api_connect.core.models import (
+    AuthType,
+    InvokeResult,
+    InvokeSpec,
+    MCPAPIConnectError,
+    Protocol,
+)
+from mcp_api_connect.core.transform import parse_response_body
 
 
-class ConfigMeshEngine:
+class MCPAPIConnectEngine:
     """The one thing every transport (FastAPI, MCP, your own script) calls.
 
     Usage:
-        engine = ConfigMeshEngine()
+        engine = MCPAPIConnectEngine()
         result = await engine.invoke(spec, payload)
         await engine.aclose()
 
     Or as an async context manager:
-        async with ConfigMeshEngine() as engine:
+        async with MCPAPIConnectEngine() as engine:
             result = await engine.invoke(spec, payload)
     """
 
@@ -50,11 +56,11 @@ class ConfigMeshEngine:
         try:
             auth_strategy = self._auth_registry.get(spec.auth.type)
             if auth_strategy is None:
-                raise ConfigMeshError(f"No auth strategy registered for '{spec.auth.type}'")
+                raise MCPAPIConnectError(f"No auth strategy registered for '{spec.auth.type}'")
 
             adapter = self._adapter_registry.get(spec.target.protocol)
             if adapter is None:
-                raise ConfigMeshError(f"No protocol adapter registered for '{spec.target.protocol}'")
+                raise MCPAPIConnectError(f"No protocol adapter registered for '{spec.target.protocol}'")
 
             prepared_auth = await auth_strategy.prepare(spec.auth, self._client)
             raw = await adapter.execute(spec.target, spec.request_format, prepared_auth, payload, self._client)
@@ -67,7 +73,7 @@ class ConfigMeshEngine:
                 raw_body=raw.text if spec.response_format.include_raw else None,
                 latency_ms=(time.monotonic() - start) * 1000,
             )
-        except ConfigMeshError as exc:
+        except MCPAPIConnectError as exc:
             return InvokeResult(
                 success=False,
                 status_code=exc.status_code,
@@ -85,7 +91,7 @@ class ConfigMeshEngine:
         if self._owns_client:
             await self._client.aclose()
 
-    async def __aenter__(self) -> ConfigMeshEngine:
+    async def __aenter__(self) -> MCPAPIConnectEngine:
         return self
 
     async def __aexit__(self, *exc_info: object) -> None:

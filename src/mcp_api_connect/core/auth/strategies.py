@@ -5,8 +5,8 @@ import time
 
 import httpx
 
-from configmesh.core.auth.base import AuthStrategy, PreparedAuth
-from configmesh.core.models import AuthSpec, ConfigMeshError
+from mcp_api_connect.core.auth.base import AuthStrategy, PreparedAuth
+from mcp_api_connect.core.models import AuthSpec, MCPAPIConnectError
 
 
 class NoneAuth(AuthStrategy):
@@ -70,14 +70,14 @@ class OAuth2ClientCredentialsAuth(AuthStrategy):
 
         resp = await client.post(token_url, data=data)
         if resp.status_code >= 400:
-            raise ConfigMeshError(
+            raise MCPAPIConnectError(
                 f"OAuth2 token request failed ({resp.status_code}): {resp.text}",
                 status_code=resp.status_code,
             )
         body = resp.json()
         access_token = body.get("access_token")
         if not access_token:
-            raise ConfigMeshError("OAuth2 token response missing 'access_token'")
+            raise MCPAPIConnectError("OAuth2 token response missing 'access_token'")
         expires_in = float(body.get("expires_in", 3600))
         # Refresh a little early to avoid races right at expiry.
         self._cache[cache_key] = (access_token, now + max(expires_in - 30, 0))
@@ -87,5 +87,5 @@ class OAuth2ClientCredentialsAuth(AuthStrategy):
 def _require(cfg: dict, key: str) -> str:
     value = cfg.get(key)
     if not value:
-        raise ConfigMeshError(f"auth.config missing required field '{key}'")
+        raise MCPAPIConnectError(f"auth.config missing required field '{key}'")
     return value

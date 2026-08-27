@@ -1,12 +1,12 @@
-from configmesh.core.auth.base import AuthStrategy, PreparedAuth
-from configmesh.core.auth.strategies import (
+from mcp_api_connect.core.auth.base import AuthStrategy, PreparedAuth
+from mcp_api_connect.core.auth.strategies import (
     ApiKeyAuth,
     BasicAuth,
     BearerAuth,
     NoneAuth,
     OAuth2ClientCredentialsAuth,
 )
-from configmesh.core.models import AuthType
+from mcp_api_connect.core.models import AuthType
 
 DEFAULT_AUTH_REGISTRY: dict[AuthType, AuthStrategy] = {
     AuthType.NONE: NoneAuth(),

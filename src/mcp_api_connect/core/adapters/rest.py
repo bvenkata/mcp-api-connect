@@ -5,10 +5,10 @@ from urllib.parse import urljoin
 
 import httpx
 
-from configmesh.core.adapters.base import ProtocolAdapter, RawResponse
-from configmesh.core.auth.base import PreparedAuth
-from configmesh.core.models import RequestFormat, Target
-from configmesh.core.transform import render_request_body
+from mcp_api_connect.core.adapters.base import ProtocolAdapter, RawResponse
+from mcp_api_connect.core.auth.base import PreparedAuth
+from mcp_api_connect.core.models import RequestFormat, Target
+from mcp_api_connect.core.transform import render_request_body
 
 
 class RestAdapter(ProtocolAdapter):

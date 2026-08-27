@@ -6,8 +6,8 @@ from typing import Any
 
 import httpx
 
-from configmesh.core.auth.base import PreparedAuth
-from configmesh.core.models import RequestFormat, Target
+from mcp_api_connect.core.auth.base import PreparedAuth
+from mcp_api_connect.core.models import RequestFormat, Target
 
 
 @dataclass

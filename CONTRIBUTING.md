@@ -1,10 +1,10 @@
-# Contributing to ConfigMesh
+# Contributing to mcp-api-connect
 
 ## Setup
 
 ```bash
-git clone https://github.com/bvenkata/configmesh.git
-cd configmesh
+git clone https://github.com/bvenkata/mcp-api-connect.git
+cd mcp-api-connect
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev,api,storage,mcp]"
 ```
@@ -24,10 +24,10 @@ suite.
 
 | Path | What lives there |
 |---|---|
-| `src/configmesh/core/` | The engine, models, auth strategies, protocol adapters, transform logic. No FastAPI/MCP dependency leaks in here. |
-| `src/configmesh/storage/` | Pluggable `ConnectorStore` implementations. |
-| `src/configmesh/api/` | FastAPI transport. |
-| `src/configmesh/mcp_server/` | MCP transport. |
+| `src/mcp_api_connect/core/` | The engine, models, auth strategies, protocol adapters, transform logic. No FastAPI/MCP dependency leaks in here. |
+| `src/mcp_api_connect/storage/` | Pluggable `ConnectorStore` implementations. |
+| `src/mcp_api_connect/api/` | FastAPI transport. |
+| `src/mcp_api_connect/mcp_server/` | MCP transport. |
 | `tests/` | Mirrors the above; add tests alongside whatever you change. |
 
 See the [README](README.md#extending) for the extension points (new auth

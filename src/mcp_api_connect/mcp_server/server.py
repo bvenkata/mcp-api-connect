@@ -1,19 +1,19 @@
-"""MCP transport over ConfigMeshEngine — lets an LLM agent call arbitrary
+"""MCP transport over MCPAPIConnectEngine — lets an LLM agent call arbitrary
 REST/SOAP services (stateless `invoke`) or pre-registered connectors
 (`register_connector` + `invoke_connector`) as tools.
 
 Run with:
-    configmesh-mcp                # stdio transport (default MCP client config)
+    mcp_api_connect-mcp                # stdio transport (default MCP client config)
 
 Point an MCP client at it, e.g. in Claude Desktop / Claude Code config:
     {
       "mcpServers": {
-        "configmesh": { "command": "configmesh-mcp" }
+        "mcp_api_connect": { "command": "mcp_api_connect-mcp" }
       }
     }
 
-Env vars: same CONFIGMESH_DB_PATH / CONFIGMESH_ENCRYPTION_KEY as the API
-transport (see configmesh.api.app) — set these so connectors registered by
+Env vars: same MCP_API_CONNECT_DB_PATH / MCP_API_CONNECT_ENCRYPTION_KEY as the API
+transport (see mcp_api_connect.api.app) — set these so connectors registered by
 one agent session persist and are visible to the next.
 """
 
@@ -23,13 +23,13 @@ from typing import Any
 
 from mcp.server.mcpserver import MCPServer
 
-from configmesh.api.app import _build_store, _redact
-from configmesh.core.engine import ConfigMeshEngine
-from configmesh.core.models import Connector, InvokeSpec
+from mcp_api_connect.api.app import _build_store, _redact
+from mcp_api_connect.core.engine import MCPAPIConnectEngine
+from mcp_api_connect.core.models import Connector, InvokeSpec
 
-mcp = MCPServer("ConfigMesh")
+mcp = MCPServer("MCPAPIConnect")
 
-_engine = ConfigMeshEngine()
+_engine = MCPAPIConnectEngine()
 _store = _build_store()
 
 

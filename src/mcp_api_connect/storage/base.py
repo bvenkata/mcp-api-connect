@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 
-from configmesh.core.models import Connector
+from mcp_api_connect.core.models import Connector
 
 
 class ConnectorStore(ABC):

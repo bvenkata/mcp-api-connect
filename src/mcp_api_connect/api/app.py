@@ -1,16 +1,16 @@
-"""Thin FastAPI transport over ConfigMeshEngine. Run directly:
+"""Thin FastAPI transport over MCPAPIConnectEngine. Run directly:
 
-    uvicorn configmesh.api.app:app --reload
+    uvicorn mcp_api_connect.api.app:app --reload
 
 or via the installed console script:
 
-    configmesh-api
+    mcp_api_connect-api
 
 Env vars:
-    CONFIGMESH_DB_PATH        - if set, uses SqliteConnectorStore at this path
-                                 (needs `pip install 'configmesh[storage]'`)
-    CONFIGMESH_ENCRYPTION_KEY - Fernet key for the sqlite store (required
-                                 alongside CONFIGMESH_DB_PATH for real use;
+    MCP_API_CONNECT_DB_PATH        - if set, uses SqliteConnectorStore at this path
+                                 (needs `pip install 'mcp_api_connect[storage]'`)
+    MCP_API_CONNECT_ENCRYPTION_KEY - Fernet key for the sqlite store (required
+                                 alongside MCP_API_CONNECT_DB_PATH for real use;
                                  generate with Fernet.generate_key())
 """
 
@@ -22,32 +22,32 @@ from typing import Any
 
 from fastapi import FastAPI, HTTPException
 
-from configmesh.core.engine import ConfigMeshEngine
-from configmesh.core.models import Connector, InvokeRequest, InvokeResult
-from configmesh.storage.base import ConnectorStore
-from configmesh.storage.memory import InMemoryConnectorStore
+from mcp_api_connect.core.engine import MCPAPIConnectEngine
+from mcp_api_connect.core.models import Connector, InvokeRequest, InvokeResult
+from mcp_api_connect.storage.base import ConnectorStore
+from mcp_api_connect.storage.memory import InMemoryConnectorStore
 
 
 def _build_store() -> ConnectorStore:
-    db_path = os.environ.get("CONFIGMESH_DB_PATH")
+    db_path = os.environ.get("MCP_API_CONNECT_DB_PATH")
     if not db_path:
         return InMemoryConnectorStore()
-    from configmesh.storage.sqlite import SqliteConnectorStore
+    from mcp_api_connect.storage.sqlite import SqliteConnectorStore
 
-    key = os.environ.get("CONFIGMESH_ENCRYPTION_KEY")
+    key = os.environ.get("MCP_API_CONNECT_ENCRYPTION_KEY")
     return SqliteConnectorStore(db_path, encryption_key=key.encode() if key else None)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    app.state.engine = ConfigMeshEngine()
+    app.state.engine = MCPAPIConnectEngine()
     app.state.store = _build_store()
     yield
     await app.state.engine.aclose()
 
 
 app = FastAPI(
-    title="ConfigMesh",
+    title="mcp-api-connect",
     description="Protocol- and auth-agnostic API connector engine.",
     version="0.1.0",
     lifespan=lifespan,
@@ -105,7 +105,7 @@ async def invoke_connector(name: str, payload: dict[str, Any]) -> InvokeResult:
 def main() -> None:
     import uvicorn
 
-    uvicorn.run("configmesh.api.app:app", host="0.0.0.0", port=8000, reload=False)
+    uvicorn.run("mcp_api_connect.api.app:app", host="0.0.0.0", port=8000, reload=False)
 
 
 if __name__ == "__main__":

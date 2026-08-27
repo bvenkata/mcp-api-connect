@@ -2,8 +2,8 @@ import httpx
 import pytest
 import respx
 
-from configmesh.core.engine import ConfigMeshEngine
-from configmesh.core.models import (
+from mcp_api_connect.core.engine import MCPAPIConnectEngine
+from mcp_api_connect.core.models import (
     AuthSpec,
     AuthType,
     InvokeSpec,
@@ -56,7 +56,7 @@ async def test_soap_invoke_round_trip():
         ),
     )
 
-    async with ConfigMeshEngine() as engine:
+    async with MCPAPIConnectEngine() as engine:
         result = await engine.invoke(spec, {"order_id": "A1"})
 
     assert result.success is True

@@ -1,5 +1,5 @@
-from configmesh.core.models import ResponseFormat
-from configmesh.core.transform import apply_field_map, parse_response_body
+from mcp_api_connect.core.models import ResponseFormat
+from mcp_api_connect.core.transform import apply_field_map, parse_response_body
 
 
 def test_apply_field_map_simple():

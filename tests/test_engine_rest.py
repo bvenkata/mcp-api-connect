@@ -2,8 +2,8 @@ import httpx
 import pytest
 import respx
 
-from configmesh.core.engine import ConfigMeshEngine
-from configmesh.core.models import (
+from mcp_api_connect.core.engine import MCPAPIConnectEngine
+from mcp_api_connect.core.models import (
     AuthSpec,
     AuthType,
     InvokeSpec,
@@ -28,7 +28,7 @@ async def test_rest_invoke_with_api_key_auth():
         response_format=ResponseFormat(content_type="json"),
     )
 
-    async with ConfigMeshEngine() as engine:
+    async with MCPAPIConnectEngine() as engine:
         result = await engine.invoke(spec, {"customer": "jane"})
 
     assert result.success is True
@@ -58,7 +58,7 @@ async def test_rest_invoke_with_field_mapping():
         response_format=ResponseFormat(content_type="json", field_map={"id": "$.orderId"}),
     )
 
-    async with ConfigMeshEngine() as engine:
+    async with MCPAPIConnectEngine() as engine:
         result = await engine.invoke(spec, {"customer": {"name": "Jane Doe"}})
 
     assert result.success is True
@@ -81,7 +81,7 @@ async def test_rest_invoke_error_status_marks_unsuccessful():
         request_format=RequestFormat(method="POST", path="/v1/orders"),
     )
 
-    async with ConfigMeshEngine() as engine:
+    async with MCPAPIConnectEngine() as engine:
         result = await engine.invoke(spec, {})
 
     assert result.success is False
@@ -111,7 +111,7 @@ async def test_oauth2_client_credentials_fetches_and_attaches_token():
             request_format=RequestFormat(method="POST", path="/v1/orders"),
         )
 
-        async with ConfigMeshEngine() as engine:
+        async with MCPAPIConnectEngine() as engine:
             result = await engine.invoke(spec, {})
 
         assert result.success is True

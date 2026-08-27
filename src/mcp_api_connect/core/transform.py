@@ -15,7 +15,7 @@ import xmltodict
 from jinja2 import Environment
 from jsonpath_ng.ext import parse as jsonpath_parse
 
-from configmesh.core.models import ConfigMeshError, RequestFormat, ResponseFormat
+from mcp_api_connect.core.models import MCPAPIConnectError, RequestFormat, ResponseFormat
 
 _jinja_env = Environment(autoescape=False)
 
@@ -62,7 +62,7 @@ def render_request_body(fmt: RequestFormat, payload: dict[str, Any]) -> tuple[by
         content_type = "text/xml" if fmt.content_type == "soap" else "application/xml"
         return xml_str.encode("utf-8"), content_type
 
-    raise ConfigMeshError(f"Unsupported request content_type '{fmt.content_type}'")
+    raise MCPAPIConnectError(f"Unsupported request content_type '{fmt.content_type}'")
 
 
 def parse_response_body(fmt: ResponseFormat, raw_text: str) -> dict[str, Any]:
@@ -75,16 +75,16 @@ def parse_response_body(fmt: ResponseFormat, raw_text: str) -> dict[str, Any]:
         try:
             parsed = json.loads(raw_text)
         except ValueError as exc:
-            raise ConfigMeshError(f"Failed to parse JSON response: {exc}") from exc
+            raise MCPAPIConnectError(f"Failed to parse JSON response: {exc}") from exc
     elif fmt.content_type in ("xml", "soap"):
         try:
             parsed = xmltodict.parse(raw_text)
         except Exception as exc:  # xmltodict raises expat errors
-            raise ConfigMeshError(f"Failed to parse XML/SOAP response: {exc}") from exc
+            raise MCPAPIConnectError(f"Failed to parse XML/SOAP response: {exc}") from exc
         if fmt.content_type == "soap" and fmt.unwrap_soap_body:
             parsed = _unwrap_soap_envelope(parsed)
     else:
-        raise ConfigMeshError(f"Unsupported response content_type '{fmt.content_type}'")
+        raise MCPAPIConnectError(f"Unsupported response content_type '{fmt.content_type}'")
 
     if not isinstance(parsed, dict):
         parsed = {"value": parsed}

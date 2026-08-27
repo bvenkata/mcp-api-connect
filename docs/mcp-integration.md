@@ -1,6 +1,6 @@
-# Using ConfigMesh as an MCP server
+# Using mcp-api-connect as an MCP server
 
-ConfigMesh's MCP server turns every registered (or ad-hoc) API connector
+mcp-api-connect's MCP server turns every registered (or ad-hoc) API connector
 into a tool an agent can call — so instead of an agent needing to know a
 target's URL, auth scheme, and payload shape every time, it can just say
 *"call the orders API with this payload"*.
@@ -11,15 +11,15 @@ tool reference, a worked example end to end, and troubleshooting.
 ## 1. Install
 
 ```bash
-pip install "configmesh[mcp]"
+pip install "mcp-api-connect[mcp]"
 ```
 
-This installs the `configmesh-mcp` console script alongside the `mcp` SDK.
+This installs the `mcp-api-connect` console script alongside the `mcp` SDK.
 If you're working from a clone instead of a published package:
 
 ```bash
-git clone https://github.com/bvenkata/configmesh.git
-cd configmesh
+git clone https://github.com/bvenkata/mcp-api-connect.git
+cd mcp-api-connect
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[mcp,storage]"
 ```
@@ -28,11 +28,11 @@ pip install -e ".[mcp,storage]"
 this as a subprocess and usually won't have your virtualenv on `PATH`:
 
 ```bash
-which configmesh-mcp
-# e.g. /Users/you/configmesh/.venv/bin/configmesh-mcp
+which mcp-api-connect
+# e.g. /Users/you/mcp-api-connect/.venv/bin/mcp-api-connect
 ```
 
-Use that absolute path in every config below (a relative `configmesh-mcp`
+Use that absolute path in every config below (a relative `mcp-api-connect`
 only works if the client happens to inherit your activated shell's `PATH`,
 which most GUI apps don't).
 
@@ -49,14 +49,14 @@ Edit the config file (create it if it doesn't exist):
 ```json
 {
   "mcpServers": {
-    "configmesh": {
-      "command": "/Users/you/configmesh/.venv/bin/configmesh-mcp"
+    "mcp-api-connect": {
+      "command": "/Users/you/mcp-api-connect/.venv/bin/mcp-api-connect"
     }
   }
 }
 ```
 
-Restart Claude Desktop. Look for the 🔌 tools icon to confirm ConfigMesh's
+Restart Claude Desktop. Look for the 🔌 tools icon to confirm mcp-api-connect's
 five tools loaded.
 
 ### Claude Code
@@ -66,8 +66,8 @@ Project-scoped — add a `.mcp.json` at your project root:
 ```json
 {
   "mcpServers": {
-    "configmesh": {
-      "command": "/Users/you/configmesh/.venv/bin/configmesh-mcp"
+    "mcp-api-connect": {
+      "command": "/Users/you/mcp-api-connect/.venv/bin/mcp-api-connect"
     }
   }
 }
@@ -77,7 +77,7 @@ Or user-scoped via the CLI (check `claude mcp add --help` for the exact
 flags on your installed version):
 
 ```bash
-claude mcp add configmesh /Users/you/configmesh/.venv/bin/configmesh-mcp
+claude mcp add mcp-api-connect /Users/you/mcp-api-connect/.venv/bin/mcp-api-connect
 ```
 
 ### Cursor / other JSON-config MCP clients
@@ -87,7 +87,7 @@ Same shape as Claude Desktop — most clients accept:
 ```json
 {
   "mcpServers": {
-    "configmesh": { "command": "/Users/you/configmesh/.venv/bin/configmesh-mcp" }
+    "mcp-api-connect": { "command": "/Users/you/mcp-api-connect/.venv/bin/mcp-api-connect" }
   }
 }
 ```
@@ -95,7 +95,7 @@ Same shape as Claude Desktop — most clients accept:
 ### Running it manually (debugging)
 
 ```bash
-configmesh-mcp
+mcp-api-connect
 ```
 
 It'll sit there waiting on stdio — that's normal, it's not meant to print
@@ -117,18 +117,18 @@ Add both env vars to your client config:
 ```json
 {
   "mcpServers": {
-    "configmesh": {
-      "command": "/Users/you/configmesh/.venv/bin/configmesh-mcp",
+    "mcp-api-connect": {
+      "command": "/Users/you/mcp-api-connect/.venv/bin/mcp-api-connect",
       "env": {
-        "CONFIGMESH_DB_PATH": "/Users/you/.configmesh/connectors.db",
-        "CONFIGMESH_ENCRYPTION_KEY": "<the key you generated above>"
+        "MCP_API_CONNECT_DB_PATH": "/Users/you/.mcp-api-connect/connectors.db",
+        "MCP_API_CONNECT_ENCRYPTION_KEY": "<the key you generated above>"
       }
     }
   }
 }
 ```
 
-Without `CONFIGMESH_DB_PATH` set, ConfigMesh uses an in-memory store —
+Without `MCP_API_CONNECT_DB_PATH` set, mcp-api-connect uses an in-memory store —
 fine for trying things out, but every `register_connector` call is gone
 the moment the MCP client restarts the server process.
 
@@ -149,7 +149,7 @@ the moment the MCP client restarts the server process.
 
 The full `InvokeSpec` shape (what `spec` looks like in `invoke` /
 `register_connector`) is documented in the [main README](../README.md#core-concepts)
-and [`core/models.py`](../src/configmesh/core/models.py). Auth `config`
+and [`core/models.py`](../src/mcp_api_connect/core/models.py). Auth `config`
 shapes per type are in [docs/auth-reference.md](auth-reference.md).
 
 ## 5. Worked example
@@ -232,7 +232,7 @@ has registered) is available before deciding to use it.
 | Symptom | Likely cause / fix |
 |---|---|
 | Tools don't show up in the client | Config file JSON is invalid, or the client wasn't restarted after editing it. Validate the JSON, restart the client. |
-| `command not found` / spawn error | You used a bare `configmesh-mcp` instead of the absolute path from `which configmesh-mcp` — the client's subprocess doesn't have your shell's `PATH`. |
-| `ModuleNotFoundError: No module named 'mcp.server.fastmcp'` | You have `mcp` 1.x installed; ConfigMesh's MCP transport targets 2.x (`MCPServer`). `pip install --upgrade "mcp>=2.0"`. |
-| Registered connectors disappear after restarting the client | You're on the default in-memory store — set `CONFIGMESH_DB_PATH` (+ `CONFIGMESH_ENCRYPTION_KEY`) as in step 3. |
+| `command not found` / spawn error | You used a bare `mcp-api-connect` instead of the absolute path from `which mcp-api-connect` — the client's subprocess doesn't have your shell's `PATH`. |
+| `ModuleNotFoundError: No module named 'mcp.server.fastmcp'` | You have `mcp` 1.x installed; mcp-api-connect's MCP transport targets 2.x (`MCPServer`). `pip install --upgrade "mcp>=2.0"`. |
+| Registered connectors disappear after restarting the client | You're on the default in-memory store — set `MCP_API_CONNECT_DB_PATH` (+ `MCP_API_CONNECT_ENCRYPTION_KEY`) as in step 3. |
 | `invoke`/`invoke_connector` returns `"success": false` with an auth error | Check `auth.config` has every field that auth type requires — see [auth-reference.md](auth-reference.md). |

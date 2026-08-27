@@ -1,7 +1,7 @@
 """Persistent connector store backed by SQLite, with `auth.config` (the
 only place raw credentials live) encrypted at rest via Fernet.
 
-Requires the `configmesh[storage]` extra (`cryptography`).
+Requires the `mcp_api_connect[storage]` extra (`cryptography`).
 """
 
 from __future__ import annotations
@@ -10,14 +10,14 @@ import json
 import sqlite3
 from pathlib import Path
 
-from configmesh.core.models import Connector
-from configmesh.storage.base import ConnectorStore
+from mcp_api_connect.core.models import Connector
+from mcp_api_connect.storage.base import ConnectorStore
 
 try:
     from cryptography.fernet import Fernet
 except ImportError as exc:  # pragma: no cover
     raise ImportError(
-        "SqliteConnectorStore requires the 'storage' extra: pip install 'configmesh[storage]'"
+        "SqliteConnectorStore requires the 'storage' extra: pip install 'mcp_api_connect[storage]'"
     ) from exc
 
 _SCHEMA = """

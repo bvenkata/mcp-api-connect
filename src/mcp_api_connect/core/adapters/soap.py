@@ -5,10 +5,10 @@ from urllib.parse import urljoin
 
 import httpx
 
-from configmesh.core.adapters.base import ProtocolAdapter, RawResponse
-from configmesh.core.auth.base import PreparedAuth
-from configmesh.core.models import ConfigMeshError, RequestFormat, Target
-from configmesh.core.transform import render_request_body
+from mcp_api_connect.core.adapters.base import ProtocolAdapter, RawResponse
+from mcp_api_connect.core.auth.base import PreparedAuth
+from mcp_api_connect.core.models import MCPAPIConnectError, RequestFormat, Target
+from mcp_api_connect.core.transform import render_request_body
 
 
 class SoapAdapter(ProtocolAdapter):
@@ -26,7 +26,7 @@ class SoapAdapter(ProtocolAdapter):
         client: httpx.AsyncClient,
     ) -> RawResponse:
         if not request_format.body_template:
-            raise ConfigMeshError(
+            raise MCPAPIConnectError(
                 "SOAP requests require request_format.body_template (a Jinja2 template "
                 "rendering the full <soap:Envelope>)."
             )

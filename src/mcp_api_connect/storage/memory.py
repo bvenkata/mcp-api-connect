@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import asyncio
 
-from configmesh.core.models import Connector
-from configmesh.storage.base import ConnectorStore
+from mcp_api_connect.core.models import Connector
+from mcp_api_connect.storage.base import ConnectorStore
 
 
 class InMemoryConnectorStore(ConnectorStore):

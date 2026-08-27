@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 
 import httpx
 
-from configmesh.core.models import AuthSpec
+from mcp_api_connect.core.models import AuthSpec
 
 
 @dataclass

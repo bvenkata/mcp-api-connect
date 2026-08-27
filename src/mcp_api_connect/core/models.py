@@ -123,7 +123,7 @@ class Connector(BaseModel):
     spec: InvokeSpec
 
 
-class ConfigMeshError(Exception):
+class MCPAPIConnectError(Exception):
     def __init__(self, message: str, status_code: int | None = None):
         super().__init__(message)
         self.message = message

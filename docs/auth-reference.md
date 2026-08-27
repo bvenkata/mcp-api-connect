@@ -2,7 +2,7 @@
 
 Every `AuthSpec` is `{"type": "<one of below>", "config": {...}}`. `config`
 keys are specific to `type` — this page is the source of truth for what
-each one expects. Implementation: [`core/auth/strategies.py`](../src/configmesh/core/auth/strategies.py).
+each one expects. Implementation: [`core/auth/strategies.py`](../src/mcp_api_connect/core/auth/strategies.py).
 
 ## `none`
 
@@ -74,7 +74,7 @@ exchange happen per-request.
 | `scope` | no | space-delimited scopes, if the provider needs them |
 | `audience` | no | some providers (e.g. Auth0) require this |
 
-Token caching is per `ConfigMeshEngine` instance, keyed by
+Token caching is per `MCPAPIConnectEngine` instance, keyed by
 `(token_url, client_id)` — long-running server/MCP processes reuse one
 token across many calls instead of re-authenticating every time.
 
@@ -82,6 +82,6 @@ token across many calls instead of re-authenticating every time.
 
 OAuth2 authorization-code flow, mTLS, and AWS SigV4 are on the
 [roadmap](../README.md#roadmap). Need one sooner? Implement `AuthStrategy`
-([`core/auth/base.py`](../src/configmesh/core/auth/base.py)) and register
+([`core/auth/base.py`](../src/mcp_api_connect/core/auth/base.py)) and register
 it with `engine.register_auth_strategy(AuthType.YOUR_TYPE, YourStrategy())`
 — no core changes required, and contributions welcome.

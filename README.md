@@ -1,9 +1,9 @@
-# ConfigMesh
+# mcp-api-connect
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](pyproject.toml)
 
-**One payload in, any API out.** ConfigMesh is a protocol- and auth-agnostic
+**One payload in, any API out.** mcp-api-connect is a protocol- and auth-agnostic
 connector engine: describe a target service (URL, protocol, auth, request/
 response shape) once, then send it a normalized payload and get a normalized
 response back — whether the target is a REST/JSON API, a legacy SOAP service,
@@ -13,11 +13,11 @@ credentials.
 It ships as three things built on the same core engine, so however you want
 to use it, you can:
 
-- **A Python library** — `pip install configmesh`, call `ConfigMeshEngine`
+- **A Python library** — `pip install mcp-api-connect`, call `MCPAPIConnectEngine`
   directly, no server required.
-- **A standalone HTTP API** — `pip install configmesh[api]`, run
-  `configmesh-api`, POST to `/invoke`.
-- **An MCP server** — `pip install configmesh[mcp]`, run `configmesh-mcp`,
+- **A standalone HTTP API** — `pip install mcp-api-connect[api]`, run
+  `mcp-api-connect-api`, POST to `/invoke`.
+- **An MCP server** — `pip install mcp-api-connect[mcp]`, run `mcp-api-connect`,
   point any MCP client (Claude, etc.) at it so an agent can call registered
   connectors — or arbitrary services on the fly — as tools.
 
@@ -25,19 +25,19 @@ to use it, you can:
 
 Every integration project reinvents the same wheel: a REST client here, a
 SOAP client there, one auth flow per service, ad-hoc request/response
-mapping scattered across the codebase. ConfigMesh centralizes that into one
+mapping scattered across the codebase. mcp-api-connect centralizes that into one
 declarative spec (`InvokeSpec`) and one execution engine, so adding a new
 target service is config, not code.
 
 ## Quick start (library)
 
 ```bash
-pip install configmesh
+pip install mcp-api-connect
 ```
 
 ```python
 import asyncio
-from configmesh import ConfigMeshEngine, InvokeSpec, Target, AuthSpec, AuthType, RequestFormat, ResponseFormat
+from mcp_api_connect import MCPAPIConnectEngine, InvokeSpec, Target, AuthSpec, AuthType, RequestFormat, ResponseFormat
 
 spec = InvokeSpec(
     target=Target(base_url="https://api.example.com"),
@@ -47,7 +47,7 @@ spec = InvokeSpec(
 )
 
 async def main():
-    async with ConfigMeshEngine() as engine:
+    async with MCPAPIConnectEngine() as engine:
         result = await engine.invoke(spec, {"customer": "jane"})
         print(result.success, result.data)
 
@@ -57,8 +57,8 @@ asyncio.run(main())
 ## Quick start (HTTP API)
 
 ```bash
-pip install "configmesh[api]"
-configmesh-api   # serves on :8000, interactive docs at /docs
+pip install "mcp-api-connect[api]"
+mcp-api-connect-api   # serves on :8000, interactive docs at /docs
 ```
 
 ```bash
@@ -83,13 +83,13 @@ curl -X POST http://localhost:8000/connectors/orders-api/invoke -d '{"customer":
 ## Quick start (MCP)
 
 ```bash
-pip install "configmesh[mcp]"
+pip install "mcp-api-connect[mcp]"
 ```
 
 ```json
 {
   "mcpServers": {
-    "configmesh": { "command": "/path/to/.venv/bin/configmesh-mcp" }
+    "mcp-api-connect": { "command": "/path/to/.venv/bin/mcp-api-connect" }
   }
 }
 ```
@@ -115,7 +115,7 @@ security notes, and a worked example: [docs/mcp-integration.md](docs/mcp-integra
 - **`InvokeSpec`** — bundles the three above; the unit of "how to reach one
   service." Store it as a named `Connector` or pass it inline per call.
 
-See [`src/configmesh/core/models.py`](src/configmesh/core/models.py) for the
+See [`src/mcp_api_connect/core/models.py`](src/mcp_api_connect/core/models.py) for the
 full schema, and [docs/auth-reference.md](docs/auth-reference.md) for the
 `config` shape each auth `type` expects.
 

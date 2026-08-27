@@ -1,12 +1,12 @@
-from configmesh.core.engine import ConfigMeshEngine
-from configmesh.core.models import (
+from mcp_api_connect.core.engine import MCPAPIConnectEngine
+from mcp_api_connect.core.models import (
     AuthSpec,
     AuthType,
-    ConfigMeshError,
     Connector,
     InvokeRequest,
     InvokeResult,
     InvokeSpec,
+    MCPAPIConnectError,
     Protocol,
     RequestFormat,
     ResponseFormat,
@@ -16,12 +16,12 @@ from configmesh.core.models import (
 __all__ = [
     "AuthSpec",
     "AuthType",
-    "ConfigMeshEngine",
-    "ConfigMeshError",
     "Connector",
     "InvokeRequest",
     "InvokeResult",
     "InvokeSpec",
+    "MCPAPIConnectEngine",
+    "MCPAPIConnectError",
     "Protocol",
     "RequestFormat",
     "ResponseFormat",
