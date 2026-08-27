@@ -1,0 +1,144 @@
+# ConfigMesh
+
+**One payload in, any API out.** ConfigMesh is a protocol- and auth-agnostic
+connector engine: describe a target service (URL, protocol, auth, request/
+response shape) once, then send it a normalized payload and get a normalized
+response back — whether the target is a REST/JSON API, a legacy SOAP service,
+protected by an API key, Basic auth, a Bearer token, or OAuth2 client
+credentials.
+
+It ships as three things built on the same core engine, so however you want
+to use it, you can:
+
+- **A Python library** — `pip install configmesh`, call `ConfigMeshEngine`
+  directly, no server required.
+- **A standalone HTTP API** — `pip install configmesh[api]`, run
+  `configmesh-api`, POST to `/invoke`.
+- **An MCP server** — `pip install configmesh[mcp]`, run `configmesh-mcp`,
+  point any MCP client (Claude, etc.) at it so an agent can call registered
+  connectors — or arbitrary services on the fly — as tools.
+
+## Why
+
+Every integration project reinvents the same wheel: a REST client here, a
+SOAP client there, one auth flow per service, ad-hoc request/response
+mapping scattered across the codebase. ConfigMesh centralizes that into one
+declarative spec (`InvokeSpec`) and one execution engine, so adding a new
+target service is config, not code.
+
+## Quick start (library)
+
+```bash
+pip install configmesh
+```
+
+```python
+import asyncio
+from configmesh import ConfigMeshEngine, InvokeSpec, Target, AuthSpec, AuthType, RequestFormat, ResponseFormat
+
+spec = InvokeSpec(
+    target=Target(base_url="https://api.example.com"),
+    auth=AuthSpec(type=AuthType.API_KEY, config={"api_key": "secret", "header_name": "X-API-Key"}),
+    request_format=RequestFormat(method="POST", path="/v1/orders", content_type="json"),
+    response_format=ResponseFormat(content_type="json"),
+)
+
+async def main():
+    async with ConfigMeshEngine() as engine:
+        result = await engine.invoke(spec, {"customer": "jane"})
+        print(result.success, result.data)
+
+asyncio.run(main())
+```
+
+## Quick start (HTTP API)
+
+```bash
+pip install "configmesh[api]"
+configmesh-api   # serves on :8000, interactive docs at /docs
+```
+
+```bash
+curl -X POST http://localhost:8000/invoke -H 'content-type: application/json' -d '{
+  "spec": {
+    "target": {"base_url": "https://api.example.com"},
+    "auth": {"type": "api_key", "config": {"api_key": "secret"}},
+    "request_format": {"method": "POST", "path": "/v1/orders"},
+    "response_format": {"content_type": "json"}
+  },
+  "payload": {"customer": "jane"}
+}'
+```
+
+Register a reusable connector once, then invoke it by name:
+
+```bash
+curl -X POST http://localhost:8000/connectors -d '{"name": "orders-api", "spec": {...}}'
+curl -X POST http://localhost:8000/connectors/orders-api/invoke -d '{"customer": "jane"}'
+```
+
+## Quick start (MCP)
+
+```bash
+pip install "configmesh[mcp]"
+```
+
+```json
+{
+  "mcpServers": {
+    "configmesh": { "command": "configmesh-mcp" }
+  }
+}
+```
+
+Exposes tools: `invoke` (stateless, one-off), `register_connector`,
+`list_connectors`, `invoke_connector` (by name), `delete_connector`. An agent
+can register a connector for "the Salesforce API" once, then just say "call
+it with this payload" from then on.
+
+## Core concepts
+
+- **`Target`** — base URL, protocol (`rest` | `soap`), timeout, default headers.
+- **`AuthSpec`** — `type` (`none`, `api_key`, `basic`, `bearer`,
+  `oauth2_client_credentials`) + a `config` dict shaped for that type. OAuth2
+  tokens are fetched and cached automatically.
+- **`RequestFormat`** / **`ResponseFormat`** — content type (`json`, `xml`,
+  `soap`) plus a declarative `field_map` (`{"target.path": "$.source.jsonpath"}`)
+  for reshaping payloads without writing code, or a Jinja2 `body_template`
+  for full control (required for SOAP envelopes).
+- **`InvokeSpec`** — bundles the three above; the unit of "how to reach one
+  service." Store it as a named `Connector` or pass it inline per call.
+
+See [`src/configmesh/core/models.py`](src/configmesh/core/models.py) for the
+full schema.
+
+## Extending
+
+- New auth type: implement `AuthStrategy`, register via
+  `engine.register_auth_strategy(...)`.
+- New protocol (e.g. GraphQL): implement `ProtocolAdapter`, register via
+  `engine.register_adapter(...)`.
+- New connector storage backend: implement `ConnectorStore` (ships with
+  `InMemoryConnectorStore` and `SqliteConnectorStore`, credentials encrypted
+  at rest via Fernet).
+
+## Roadmap
+
+- OAuth2 authorization-code flow, mTLS, AWS SigV4 auth strategies
+- WSDL-driven SOAP (optional `zeep`-backed adapter, no hand-written envelope needed)
+- GraphQL adapter
+- Postgres-backed `ConnectorStore`
+- Retry/backoff + rate limiting policies per connector
+- SSRF-safe target allow-listing for public deployments
+
+## Development
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev,api,storage,mcp]"
+pytest
+```
+
+## License
+
+MIT — see [LICENSE](LICENSE).

@@ -1,0 +1,61 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "configmesh"
+version = "0.1.0"
+description = "Protocol- and auth-agnostic API connector engine: send one normalized payload, reach REST or SOAP services behind any auth scheme."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [
+    { name = "ConfigMesh contributors" }
+]
+keywords = ["api", "integration", "connector", "soap", "rest", "oauth", "mcp", "gateway"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Internet :: WWW/HTTP",
+]
+
+dependencies = [
+    "httpx>=0.27",
+    "pydantic>=2.6",
+    "jsonpath-ng>=1.6",
+    "jinja2>=3.1",
+    "xmltodict>=0.13",
+]
+
+[project.optional-dependencies]
+soap = ["zeep>=4.2"]
+api = ["fastapi>=0.110", "uvicorn[standard]>=0.29"]
+storage = ["cryptography>=42.0"]
+mcp = ["mcp>=2.0"]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "respx>=0.21",
+    "ruff>=0.4",
+]
+
+[project.scripts]
+configmesh-api = "configmesh.api.app:main"
+configmesh-mcp = "configmesh.mcp_server.server:main"
+
+[project.urls]
+Homepage = "https://github.com/your-org/configmesh"
+Issues = "https://github.com/your-org/configmesh/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/configmesh"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
