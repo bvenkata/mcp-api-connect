@@ -1,6 +1,6 @@
-# mcp-api-connect
+# mcp-api-connect&trade;
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](pyproject.toml)
 
 **One payload in, any API out.** mcp-api-connect is a protocol- and auth-agnostic
@@ -157,4 +157,15 @@ pytest
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+Apache License 2.0 — see [LICENSE](LICENSE) and [NOTICE](NOTICE).
+
+Contributions are accepted under the same license (inbound = outbound); see
+[CONTRIBUTING.md](CONTRIBUTING.md).
+
+## Trademark
+
+**mcp-api-connect&trade;** is a trademark of Balaji Venkatasubramaniyar. The
+Apache 2.0 license covers copyright and patents but grants no trademark rights.
+You may use the name to refer to this project and to state compatibility, but
+not to name a fork, product, or service, or to imply endorsement. See
+[TRADEMARKS.md](TRADEMARKS.md) for the full policy.

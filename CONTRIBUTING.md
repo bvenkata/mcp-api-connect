@@ -53,6 +53,16 @@ be one of these three shapes.
   without a test covering it will get asked for one.
 - Run `ruff check` locally; CI will catch anything missed.
 
+## Licensing of contributions
+
+mcp-api-connect is licensed under the [Apache License 2.0](LICENSE). By
+submitting a contribution you agree that it is licensed under the same terms
+(inbound = outbound), per section 5 of the license. No separate CLA is
+required. Don't submit code you don't have the right to license this way.
+
+Note that the Apache 2.0 license does not grant trademark rights; see
+[TRADEMARKS.md](TRADEMARKS.md).
+
 ## Reporting issues
 
 Open a GitHub issue with: what you tried (`InvokeSpec` shape is fine to
