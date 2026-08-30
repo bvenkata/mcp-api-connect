@@ -96,6 +96,13 @@ pip install "mcp-api-connect[mcp]"
 }
 ```
 
+Or run it in a container (stdio transport):
+
+```bash
+docker build -t mcp-api-connect .
+docker run --rm -i mcp-api-connect
+```
+
 Exposes tools: `invoke` (stateless, one-off), `register_connector`,
 `list_connectors`, `invoke_connector` (by name), `delete_connector`. An agent
 can register a connector for "the Salesforce API" once, then just say "call

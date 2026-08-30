@@ -16,7 +16,6 @@ Env vars:
 
 from __future__ import annotations
 
-import os
 from contextlib import asynccontextmanager
 from typing import Any
 
@@ -24,24 +23,13 @@ from fastapi import FastAPI, HTTPException
 
 from mcp_api_connect.core.engine import MCPAPIConnectEngine
 from mcp_api_connect.core.models import Connector, InvokeRequest, InvokeResult
-from mcp_api_connect.storage.base import ConnectorStore
-from mcp_api_connect.storage.memory import InMemoryConnectorStore
-
-
-def _build_store() -> ConnectorStore:
-    db_path = os.environ.get("MCP_API_CONNECT_DB_PATH")
-    if not db_path:
-        return InMemoryConnectorStore()
-    from mcp_api_connect.storage.sqlite import SqliteConnectorStore
-
-    key = os.environ.get("MCP_API_CONNECT_ENCRYPTION_KEY")
-    return SqliteConnectorStore(db_path, encryption_key=key.encode() if key else None)
+from mcp_api_connect.storage.factory import build_store, redact_connector
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.state.engine = MCPAPIConnectEngine()
-    app.state.store = _build_store()
+    app.state.store = build_store()
     yield
     await app.state.engine.aclose()
 
@@ -54,14 +42,6 @@ app = FastAPI(
 )
 
 
-def _redact(connector: Connector) -> dict[str, Any]:
-    """Never echo back raw credentials in list/get responses."""
-    data = connector.model_dump(mode="json")
-    if data["spec"]["auth"]["config"]:
-        data["spec"]["auth"]["config"] = {k: "***" for k in data["spec"]["auth"]["config"]}
-    return data
-
-
 @app.post("/invoke", response_model=InvokeResult)
 async def invoke(request: InvokeRequest) -> InvokeResult:
     """Stateless call: full target/auth/format spec + payload in one shot."""
@@ -71,12 +51,12 @@ async def invoke(request: InvokeRequest) -> InvokeResult:
 @app.post("/connectors", status_code=201)
 async def create_connector(connector: Connector) -> dict[str, Any]:
     await app.state.store.save(connector)
-    return _redact(connector)
+    return redact_connector(connector)
 
 
 @app.get("/connectors")
 async def list_connectors() -> list[dict[str, Any]]:
-    return [_redact(c) for c in await app.state.store.list()]
+    return [redact_connector(c) for c in await app.state.store.list()]
 
 
 @app.get("/connectors/{name}")
@@ -84,7 +64,7 @@ async def get_connector(name: str) -> dict[str, Any]:
     connector = await app.state.store.get(name)
     if connector is None:
         raise HTTPException(status_code=404, detail=f"No connector named '{name}'")
-    return _redact(connector)
+    return redact_connector(connector)
 
 
 @app.delete("/connectors/{name}", status_code=204)

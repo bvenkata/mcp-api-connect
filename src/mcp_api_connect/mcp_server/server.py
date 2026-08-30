@@ -12,9 +12,9 @@ Point an MCP client at it, e.g. in Claude Desktop / Claude Code config:
       }
     }
 
-Env vars: same MCP_API_CONNECT_DB_PATH / MCP_API_CONNECT_ENCRYPTION_KEY as the API
-transport (see mcp_api_connect.api.app) — set these so connectors registered by
-one agent session persist and are visible to the next.
+Env vars: MCP_API_CONNECT_DB_PATH / MCP_API_CONNECT_ENCRYPTION_KEY (see
+mcp_api_connect.storage.factory.build_store) — set these so connectors
+registered by one agent session persist and are visible to the next.
 """
 
 from __future__ import annotations
@@ -23,14 +23,14 @@ from typing import Any
 
 from mcp.server.mcpserver import MCPServer
 
-from mcp_api_connect.api.app import _build_store, _redact
 from mcp_api_connect.core.engine import MCPAPIConnectEngine
 from mcp_api_connect.core.models import Connector, InvokeSpec
+from mcp_api_connect.storage.factory import build_store, redact_connector
 
 mcp = MCPServer("MCPAPIConnect")
 
 _engine = MCPAPIConnectEngine()
-_store = _build_store()
+_store = build_store()
 
 
 @mcp.tool()
@@ -50,14 +50,14 @@ async def register_connector(name: str, spec: InvokeSpec, description: str = "")
     resending credentials each time."""
     connector = Connector(name=name, description=description, spec=spec)
     await _store.save(connector)
-    return _redact(connector)
+    return redact_connector(connector)
 
 
 @mcp.tool()
 async def list_connectors() -> list[dict[str, Any]]:
     """List registered connectors (credentials redacted) so an agent can
     discover what's already available before calling `invoke_connector`."""
-    return [_redact(c) for c in await _store.list()]
+    return [redact_connector(c) for c in await _store.list()]
 
 
 @mcp.tool()
