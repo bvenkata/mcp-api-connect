@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1280px; height: 640px; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI",
+                 Helvetica, Arial, sans-serif;
+    color: #e8edf4;
+    background: radial-gradient(1100px 700px at 78% -10%, #1c3a5e 0%, #0d1b2e 45%, #08111d 100%);
+    overflow: hidden;
+  }
+  .card { position: relative; width: 100%; height: 100%; padding: 66px 80px; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 18px; font-weight: 600; letter-spacing: .12em;
+    text-transform: uppercase; color: #8fb7e6;
+  }
+  .badge .dot { width: 9px; height: 9px; border-radius: 50%; background: #4f9cf0;
+                box-shadow: 0 0 14px 2px #4f9cf0aa; }
+
+  h1 { font-size: 88px; font-weight: 800; letter-spacing: -.03em;
+       margin: 22px 0 14px; line-height: 1; }
+  h1 .mono { font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+             font-weight: 700; }
+
+  .tag { font-size: 38px; font-weight: 700; color: #ffffff; letter-spacing: -.01em; }
+  .sub { font-size: 24px; font-weight: 400; color: #9db3cc; margin-top: 14px;
+         max-width: 940px; line-height: 1.4; }
+
+  .chips { display: flex; gap: 11px; margin-top: 34px; }
+  .chip {
+    font-size: 20px; font-weight: 600; color: #cfe0f5;
+    background: #ffffff14; border: 1px solid #ffffff22;
+    border-radius: 999px; padding: 9px 19px; white-space: nowrap;
+  }
+
+  .foot {
+    position: absolute; left: 80px; right: 80px; bottom: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .surfaces { font-size: 22px; color: #8298b3; font-weight: 500; }
+  .surfaces b { color: #dce8f6; font-weight: 700; }
+  .surfaces .sep { color: #48607c; margin: 0 6px; }
+
+  .flow { display: flex; align-items: center; gap: 14px;
+          font-family: "SF Mono", Menlo, Consolas, monospace; }
+  .node {
+    width: 76px; height: 76px; border-radius: 18px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; font-weight: 700; color: #dbe9fb;
+    background: #ffffff10; border: 1.5px solid #ffffff2b;
+  }
+  .node.accent { background: #4f9cf022; border-color: #4f9cf077; color: #bcd8fb; }
+  .arrow { color: #4f7aa8; font-size: 24px; }
+
+  .brandline { position: absolute; right: 80px; top: 70px; font-size: 20px;
+               color: #7f97b2; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="badge"><span class="dot"></span> Open source &middot; Apache 2.0</div>
+
+    <h1><span class="mono">mcp-api-connect</span></h1>
+    <div class="tag">One payload in, any API out.</div>
+    <div class="sub">
+      A protocol- and auth-agnostic connector engine. Describe a service once,
+      send it a normalized payload, get a normalized response back.
+    </div>
+
+    <div class="chips">
+      <span class="chip">REST / JSON</span>
+      <span class="chip">SOAP / XML</span>
+      <span class="chip">API key</span>
+      <span class="chip">Basic</span>
+      <span class="chip">Bearer</span>
+      <span class="chip">OAuth2</span>
+    </div>
+
+    <div class="foot">
+      <div class="surfaces">
+        <b>Python library</b> <span class="sep">/</span>
+        <b>HTTP API</b> <span class="sep">/</span>
+        <b>MCP server</b>
+      </div>
+      <div class="flow">
+        <div class="node">{ }</div>
+        <div class="arrow">&rarr;</div>
+        <div class="node accent">&#9881;</div>
+        <div class="arrow">&rarr;</div>
+        <div class="node">API</div>
+      </div>
+    </div>
+
+    <div class="brandline">github.com/bvenkata/mcp-api-connect</div>
+  </div>
+</body>
+</html>
